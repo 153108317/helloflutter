@@ -174,7 +174,7 @@ class NewRoute extends StatelessWidget {
         title: Text('New Route'),
       ),
       body: Center(
-        child: Text('this is new route'),
+       child: ListView(),
       ),
     );
   }
