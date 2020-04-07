@@ -43,7 +43,7 @@ class HomePage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) {
-                          return NewDart(text: '历史');
+                          return NewDart(text: '列表');
                         },
                         maintainState: true));
               },

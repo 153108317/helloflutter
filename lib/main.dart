@@ -5,6 +5,8 @@ import 'package:flutter_app/mypage.dart';
 import 'package:flutter_app/newdart.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/route/MyGridViewRoute.dart';
+import 'package:flutter_app/route/MyListViewRoute.dart';
 import 'MyDrawer.dart';
 
 void main() => runApp(MyApp());
@@ -33,6 +35,9 @@ class MyApp extends StatelessWidget {
         'new_route': (context) => NewRoute(),
         'argu_route': (context) => ArguRoute(),
         'widget_route': (context) => MyWidget(),
+        'mylistview':(context)=>MyListViewRoute(),
+        'mygridview':(context)=>MyGridViewRoute(),
+
       },
 
       //  home: MyHomePage(title: 'Flutter Demo Home Page hh'),
@@ -64,9 +69,9 @@ class _MyHomePageState extends State<MyHomePage>
   var result = "Row and Column";
 
   var rresult;
-  int _selectedIndex = 1;
+  int _selectedIndex = 0;
   TabController _tabController;
-  List tabs = ['新闻', '历史', '图片'];
+  List tabs = ['新闻', '列表', '图片'];
 
   @override
   void initState() {
@@ -89,6 +94,34 @@ class _MyHomePageState extends State<MyHomePage>
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      switch(_selectedIndex){
+        case 0:
+          Navigator.push(context,MaterialPageRoute(
+              builder:(context) {
+                return new NewRoute();
+              },
+              maintainState: true
+          )  );
+          break;
+        case 1:
+
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context){
+              return new MyListViewRoute();
+            }
+          ));
+
+          break;
+        case 2:
+
+          Navigator.push(context, MaterialPageRoute(
+            builder: (context){
+              return new MyGridViewRoute();
+            },
+            maintainState: true
+          ))     ;
+          break;
+      }
     });
   }
 
@@ -174,7 +207,44 @@ class NewRoute extends StatelessWidget {
         title: Text('New Route'),
       ),
       body: Center(
-       child: ListView(),
+        
+       child: ListView(
+         padding: EdgeInsets.all(10),
+         children: <Widget>[
+           Text("this is top",style: TextStyle(fontSize:16,color: Colors.blueAccent,backgroundColor:Colors.deepOrangeAccent ),),
+
+           Text('hello world'),
+           Text('hello world'),
+           Text('hello world'),
+           Text('hello world'),
+           Text('hello world'),  Text('hello world'),
+           Text('hello world'),  Text('hello world'),
+           Text('hello world'),  Text('hello world'),
+           Text('hello world'),  Text('hello world'),
+           Text('hello world'),  Text('hello world'),
+           Text('hello world'),  Text('hello world'),
+           Text('hello world'),  Text('hello world'),
+           Text('hello world'),  Text('hello world'),
+           Text('hello world'),  Text('hello world'),
+           Text('hello world'),
+            Text("hello world",style: TextStyle(fontSize:16,color: Colors.green),),
+            Text("hello world",style: TextStyle(fontSize:16,color: Colors.green),),
+            Text("hello world",style: TextStyle(fontSize:16,color: Colors.green),),
+            Text("hello world",style: TextStyle(fontSize:16,color: Colors.green),),
+            Text("hello world",style: TextStyle(fontSize:16,color: Colors.green),),
+           Text("hello world",style: TextStyle(fontSize:16,color: Colors.yellow),),
+           Text("hello world",style: TextStyle(fontSize:16,color: Colors.yellow),),
+           Text("hello world",style: TextStyle(fontSize:16,color: Colors.yellow),),
+           Text("hello world",style: TextStyle(fontSize:16,color: Colors.yellow),),
+           Text("hello world",style: TextStyle(fontSize:16,color: Colors.yellow),),
+           Text("hello world",style: TextStyle(fontSize:16,color: Colors.green),),
+           Text("hello world",style: TextStyle(fontSize:16,color: Colors.green),),
+           Text("hello world",style: TextStyle(fontSize:16,color: Colors.green),),
+           Text("hello world",style: TextStyle(fontSize:16,color: Colors.green),),
+           Text("hello world",style: TextStyle(fontSize:16,color: Colors.green),),
+           Text("this is bottom",style: TextStyle(fontSize:16,color: Colors.blueAccent),),
+         ],
+       ),
       ),
     );
   }
