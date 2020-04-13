@@ -123,6 +123,8 @@ class _MyHomePageState extends State<MyHomePage>
     });
   }
 
+  DateTime _dateTime;
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -131,68 +133,77 @@ class _MyHomePageState extends State<MyHomePage>
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.share),
-            onPressed: () {},
-          )
-        ],
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              icon: Icon(
-                Icons.dashboard,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
+    return new WillPopScope(
+        child: Scaffold(
+          appBar: AppBar(
+            // Here we take the value from the MyHomePage object that was created by
+            // the App.build method, and use it to set our appbar title.
+            title: Text(widget.title),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.share),
+                onPressed: () {},
+              )
+            ],
+            leading: Builder(
+              builder: (context) {
+                return IconButton(
+                  icon: Icon(
+                    Icons.dashboard,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                );
               },
-            );
-          },
-        ),
-        bottom: TabBar(
-            controller: _tabController,
-            tabs: tabs.map((e) => Tab(text: e)).toList()),
-      ),
-      drawer: new MyDrawer(),
-      bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            title: Text('Home'),
+            ),
+            bottom: TabBar(
+                controller: _tabController,
+                tabs: tabs.map((e) => Tab(text: e)).toList()),
           ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.business), title: Text('bussiness')),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.school), title: Text('school'))
-        ],
-        currentIndex: _selectedIndex,
-        fixedColor: Colors.blue,
-        onTap: _onItemTapped,
-      ),
+          drawer: new MyDrawer(),
+          bottomNavigationBar: BottomNavigationBar(
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                title: Text('Home'),
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.business), title: Text('bussiness')),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.school), title: Text('school'))
+            ],
+            currentIndex: _selectedIndex,
+            fixedColor: Colors.blue,
+            onTap: _onItemTapped,
+          ),
 
-      body: TabBarView(
-        controller: _tabController,
-        children: <Widget>[
-          HomePage(),
-          NewRoute(),
-          //  NewDart(text: '历史'),
-          MyPage(),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
-
-      // This trailing comma makes auto-formatting nicer for build methods.
-    );
+          body: TabBarView(
+            controller: _tabController,
+            children: <Widget>[
+              HomePage(),
+              NewRoute(),
+              //  NewDart(text: '历史'),
+              MyPage(),
+            ],
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: _incrementCounter,
+            tooltip: 'Increment',
+            child: Icon(Icons.add),
+          ),
+          // This trailing comma makes auto-formatting nicer for build methods.
+        ),
+        onWillPop: () async {
+          if (_dateTime == null ||
+              DateTime.now().difference(_dateTime) > Duration(seconds: 1)) {
+            _dateTime = DateTime.now();
+            return false;
+          } else {
+            return true;
+          }
+        });
   }
 }
 
