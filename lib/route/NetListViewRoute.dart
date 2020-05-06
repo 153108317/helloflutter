@@ -4,9 +4,11 @@ import 'dart:convert';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/model/test.dart';
 import 'package:flutter_app/utils/PrintUtil.dart';
+import 'package:flutter_app/utils/StringUtil.dart';
 
-class MyListViewRoute extends StatefulWidget {
+class NetListViewRoute extends StatefulWidget {
   @override
   _MyLIstviewRoute createState() {
     // TODO: implement createState
@@ -14,9 +16,10 @@ class MyListViewRoute extends StatefulWidget {
   }
 }
 
-class _MyLIstviewRoute extends State<MyListViewRoute> {
+class _MyLIstviewRoute extends State<NetListViewRoute> {
   static String endTag = "this is the end ";
   var _words = <String>[endTag];
+  List<test> list = List();
 
   get() async {
     var client = new HttpClient();
@@ -25,7 +28,16 @@ class _MyLIstviewRoute extends State<MyListViewRoute> {
     var request = await client.getUrl(Uri.parse(url));
     var response = await request.close();
     var responseBody = await response.transform(Utf8Decoder()).join();
-    print("xxxxxx" + responseBody.toString());
+    Map<String, dynamic> tests = json.decode(responseBody.toString());
+    if (tests.containsKey("result")) {
+      list.clear();
+      for (var d in tests['result']) {
+        list.add(test(d['title'], d['album_1000_1000'], d['author'],
+            d['si_proxycompany']));
+      }
+//      list.addAll(json.decode(json.encode(test['result'])) );
+      setState(() {});
+    }
   }
 
   ScrollController _controller = new ScrollController();
@@ -41,7 +53,8 @@ class _MyLIstviewRoute extends State<MyListViewRoute> {
         showToTopBtn = true;
       }
     });
-    updateData();
+//    updateData();
+    get();
   }
 
   void updateData() {
@@ -64,31 +77,29 @@ class _MyLIstviewRoute extends State<MyListViewRoute> {
     );
     return Scaffold(
       appBar: AppBar(
-        title: const Text("MyListViewRoute"),
+        title: const Text("歌曲列表"),
       ),
       body: ListView.separated(
-          itemCount: _words.length,
+          itemCount: list.length,
           controller: _controller,
           separatorBuilder: (BuildContext c, int index) {
             return index % 2 == 0 ? divider1 : divider2;
           },
           itemBuilder: (BuildContext context, int index) {
-            if (_words.length - 1 == index) {
-              updateData();
-            } else {}
             return ListTile(
+                isThreeLine: false,
                 leading: CircleAvatar(
                   backgroundImage: NetworkImage(
-                      'https://upload-images.jianshu.io/upload_images/15194389-846ee5b033d3d4e2.png?imageMogr2/auto-orient/strip|imageView2/2/w/522'),
+                      StringUtil.replace(list[index].album_1000_1000)),
                 ),
-                title: Text(_words[index] + "$index"),
+                title: Text(list[index].title),
                 trailing: GestureDetector(
-                  child: Text("网络请求"),
+                  child: Text("" + list[index].author),
                   onTap: () {
-                    get();
+                    //  get();
                   },
                 ),
-                subtitle: Text("hellothis is a listViewItem "));
+                subtitle: Text(" " + list[index].si_proxycompany));
           }),
       floatingActionButton: !showToTopBtn
           ? FloatingActionButton(

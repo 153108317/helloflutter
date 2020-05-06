@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/HomePage.dart';
 import 'package:flutter_app/MyWidgetRoute.dart';
@@ -8,7 +11,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_app/route/CusterScrollViewRoute.dart';
 import 'package:flutter_app/route/MyGridViewRoute.dart';
 import 'package:flutter_app/route/MyListViewRoute.dart';
+import 'package:flutter_app/route/NetListViewRoute.dart';
+import 'package:flutter_app/utils/StringUtil.dart';
 import 'MyDrawer.dart';
+import 'model/test.dart';
+import 'model/weather_entity.dart';
 
 void main() => runApp(MyApp());
 
@@ -33,10 +40,11 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         "/": (context) => MyHomePage(title: 'this is homePage haha'),
-        'new_route': (context) => NewRoute(),
+        'new_route': (context) => CusterScrollViewRoute(),
         'argu_route': (context) => ArguRoute(),
         'widget_route': (context) => MyWidget(),
         'mylistview': (context) => MyListViewRoute(),
+        'widget_netroute': (context) => NetListViewRoute(),
         'mygridview': (context) => MyGridViewRoute(),
       },
 
@@ -100,7 +108,7 @@ class _MyHomePageState extends State<MyHomePage>
               context,
               MaterialPageRoute(
                   builder: (context) {
-                    return new NewRoute();
+                    return new CusterScrollViewRoute();
                   },
                   maintainState: true));
           break;
@@ -207,130 +215,111 @@ class _MyHomePageState extends State<MyHomePage>
   }
 }
 
-class NewRoute extends StatelessWidget {
+class NewRoute extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return new _NewRoute();
+  }
+}
+
+class _NewRoute extends State<NewRoute> {
+  @override
+  void initState() {
+    super.initState();
+    getWeather();
+  }
+
+  List<WeatherDataForecast> list = List();
+
   void totheNextPage(BuildContext context) {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return new CusterScrollViewRoute();
     }));
   }
 
+  getWeather() async {
+    //
+    var client = new HttpClient();
+    //101040100 重庆
+    var url =
+        "http://t.weather.sojson.com/api/weather/city/101040700"; //101040700
+    var request = await client.getUrl(Uri.parse(url));
+    var response = await request.close();
+    var responseBody = await response.transform(Utf8Decoder()).join();
+    print("xxxxx" + responseBody);
+    Map<String, dynamic> weather = json.decode(responseBody);
+    if (weather.containsKey("data")) {
+      Map<String, dynamic> data = weather["data"];
+      if (data != null && data.containsKey("forecast")) {
+//        Map<String, dynamic> forecast = data["forecast"];
+        for (var d in data['forecast']) {
+          WeatherDataForecast wd = new WeatherDataForecast();
+          wd.ymd = d['ymd'];
+          wd.week = d['week'];
+          wd.notice = d['notice'];
+          wd.high = d['high'];
+          wd.low = d['low'];
+          wd.fx = d['fx'];
+          wd.fl = d['fl'];
+          wd.type = d['type'];
+          wd.sunrise = d['sunrise'];
+          wd.sunset = d['sunset'];
+          list.add(wd);
+        }
+      }
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    Widget divider1 = Divider(
+      color: Colors.deepOrangeAccent,
+    );
+    Widget divider2 = Divider(
+      color: Colors.blue,
+    );
     return Scaffold(
       appBar: AppBar(
-        title: Text('New Route'),
+        title: Text('天气预报'),
       ),
-      body: Center(
-        child: ListView(
-          padding: EdgeInsets.all(10),
-          children: <Widget>[
-            Text(
-              "this is top",
-              style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.blueAccent,
-                  backgroundColor: Colors.deepOrangeAccent),
-            ),
-            Text('hello world'),
-            Text('hello world'),
-            Text('hello world'),
-            Text('hello world'),
-            Text('hello world'),
-            new Container(
-              child: GestureDetector(
-                child: FloatingActionButton(
-                  child: Text('hello world to CusterScrollViewRoute'),
-                  onPressed: () {
-                    totheNextPage(context);
+      body: ListView.separated(
+          itemCount: list.length,
+          // controller: _controller,
+          separatorBuilder: (BuildContext c, int index) {
+            return index % 2 == 0 ? divider1 : divider2;
+          },
+          itemBuilder: (BuildContext context, int index) {
+            WeatherDataForecast wd = list[index];
+            return ListTile(
+                isThreeLine: true,
+                leading: Icon(Icons.beach_access),
+                trailing: GestureDetector(
+                  child: Text("         " +
+                      wd.ymd +
+                      " " +
+                      wd.week +
+                      "\n" +
+                      "          " +
+                      wd.high +
+                      wd.low +
+                      "  " +
+                      wd.fx +
+                      wd.fl +
+                      wd.type +
+                      "  " +
+                      wd.notice +
+                      "          " +
+                      " 日出" +
+                      wd.sunrise +
+                      "  日落 " +
+                      wd.sunset),
+                  onTap: () {
+                    //  get();
                   },
                 ),
-              ),
-            ),
-            Text('hello world'),
-            Text('hello world'),
-            Text('hello world'),
-            Text('hello world'),
-            Text('hello world'),
-            Text('hello world'),
-            Text('hello world'),
-            Text('hello world'),
-            Text('hello world'),
-            Text('hello world'),
-            Text('hello world'),
-            Text('hello world'),
-            Text('hello world'),
-            Text('hello world'),
-            Text('hello world'),
-            Text('hello world'),
-            Text('hello world'),
-            Text(
-              "hello world",
-              style: TextStyle(fontSize: 16, color: Colors.green),
-            ),
-            Text(
-              "hello world",
-              style: TextStyle(fontSize: 16, color: Colors.green),
-            ),
-            Text(
-              "hello world",
-              style: TextStyle(fontSize: 16, color: Colors.green),
-            ),
-            Text(
-              "hello world",
-              style: TextStyle(fontSize: 16, color: Colors.green),
-            ),
-            Text(
-              "hello world",
-              style: TextStyle(fontSize: 16, color: Colors.green),
-            ),
-            Text(
-              "hello world",
-              style: TextStyle(fontSize: 16, color: Colors.yellow),
-            ),
-            Text(
-              "hello world",
-              style: TextStyle(fontSize: 16, color: Colors.yellow),
-            ),
-            Text(
-              "hello world",
-              style: TextStyle(fontSize: 16, color: Colors.yellow),
-            ),
-            Text(
-              "hello world",
-              style: TextStyle(fontSize: 16, color: Colors.yellow),
-            ),
-            Text(
-              "hello world",
-              style: TextStyle(fontSize: 16, color: Colors.yellow),
-            ),
-            Text(
-              "hello world",
-              style: TextStyle(fontSize: 16, color: Colors.green),
-            ),
-            Text(
-              "hello world",
-              style: TextStyle(fontSize: 16, color: Colors.green),
-            ),
-            Text(
-              "hello world",
-              style: TextStyle(fontSize: 16, color: Colors.green),
-            ),
-            Text(
-              "hello world",
-              style: TextStyle(fontSize: 16, color: Colors.green),
-            ),
-            Text(
-              "hello world",
-              style: TextStyle(fontSize: 16, color: Colors.green),
-            ),
-            Text(
-              "this is bottom",
-              style: TextStyle(fontSize: 16, color: Colors.blueAccent),
-            ),
-          ],
-        ),
-      ),
+                subtitle: Text(""));
+          }),
     );
   }
 }

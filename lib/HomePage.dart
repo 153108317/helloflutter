@@ -50,7 +50,7 @@ class HomePage extends StatelessWidget {
             ),
             RaisedButton(
               textColor: Colors.deepOrange,
-              child: Text('open newroute with route table'),
+              child: Text(' 单列表'),
               onPressed: () {
                 Navigator.push(
                     context,
@@ -63,7 +63,7 @@ class HomePage extends StatelessWidget {
             ),
             RaisedButton(
               textColor: Colors.deepOrange,
-              child: Text('open newroute with route table'),
+              child: Text('多列表'),
               onPressed: () {
                 Navigator.pushNamed(context, 'new_route');
               },
@@ -83,9 +83,17 @@ class HomePage extends StatelessWidget {
             ),
             RaisedButton(
               textColor: Colors.amber,
-              child: Text('Widgets '),
+              child: Text('各种控件 '),
               onPressed: () {
                 Navigator.pushNamed(context, 'widget_route',
+                    arguments: 'argumentsyes');
+              },
+            ),
+            RaisedButton(
+              textColor: Colors.amber,
+              child: Text('歌曲列表 '),
+              onPressed: () {
+                Navigator.pushNamed(context, 'widget_netroute',
                     arguments: 'argumentsyes');
               },
             ),
