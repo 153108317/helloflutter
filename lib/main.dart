@@ -242,7 +242,7 @@ class _NewRoute extends State<NewRoute> {
     var client = new HttpClient();
     //101040100 重庆
     var url =
-        "http://t.weather.sojson.com/api/weather/city/101040700"; //101040700
+        "http://t.weather.sojson.com/api/weather/city/101040100"; //101040700
     var request = await client.getUrl(Uri.parse(url));
     var response = await request.close();
     var responseBody = await response.transform(Utf8Decoder()).join();
@@ -294,26 +294,28 @@ class _NewRoute extends State<NewRoute> {
             return ListTile(
                 isThreeLine: true,
                 leading: Icon(Icons.beach_access),
+                title: Text(""),
                 trailing: GestureDetector(
-                  child: Text("         " +
+                  child: Text(
                       wd.ymd +
                       " " +
                       wd.week +
+                      "     " +
+                      " 日出" +
+                      wd.sunrise +
+                      "  日落 " +
+                      wd.sunset+
                       "\n" +
-                      "          " +
+
                       wd.high +
                       wd.low +
                       "  " +
                       wd.fx +
                       wd.fl +
                       wd.type +
-                      "  " +
-                      wd.notice +
-                      "          " +
-                      " 日出" +
-                      wd.sunrise +
-                      "  日落 " +
-                      wd.sunset),
+                      "\n" +
+                      wd.notice
+                    ),
                   onTap: () {
                     //  get();
                   },
