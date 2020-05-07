@@ -2,12 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/route/WebRoute.dart';
 
-import 'main.dart';
-import 'model/news_entity.dart';
-import 'newdart.dart';
+import '../main.dart';
+import '../model/news_entity.dart';
+import '../newdart.dart';
 
-class HomePage extends StatefulWidget {
+class NewsRoute extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -15,7 +16,7 @@ class HomePage extends StatefulWidget {
   }
 }
 
-class _HomePage extends State<HomePage> {
+class _HomePage extends State<NewsRoute> {
   NewsEntity newsEntity;
 
   //http://c.m.163.com/nc/article/headline/T1348649580692/0-40.html
@@ -45,14 +46,13 @@ class _HomePage extends State<HomePage> {
     // TODO: implement build
     return Scaffold(
       body: Center(
-        child: ListView.builder(
-            itemBuilder: (BuildContext context, int index) {
-              if (newsEntity != null) {
-                return ItemView(newsEntity.t1348649580692[index]);
-              } else {
-                return ItemView(null);
-              }
-            }),
+        child: ListView.builder(itemBuilder: (BuildContext context, int index) {
+          if (newsEntity != null) {
+            return ItemView(newsEntity.t1348649580692[index]);
+          } else {
+            return ItemView(null);
+          }
+        }),
       ),
     );
   }
@@ -70,10 +70,10 @@ class ItemView extends StatelessWidget {
     }
     return Container(
 //        height: 300,
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          color: Colors.white,
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color: Colors.white,
 //          boxShadow: [
 //            BoxShadow(
 //                color: Color(0x99FFFF66),
@@ -83,25 +83,35 @@ class ItemView extends StatelessWidget {
 //            BoxShadow(color: Color(0xfff00f77), offset: Offset(10.0, 10.0)),
 //            BoxShadow(color: Color(0xFFf44fFF), offset: Offset(10.0, 10.0))
 //          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              width: 2000,
-              padding: EdgeInsets.fromLTRB(0, 5, 0, 10),
-           child:   Text(
-                item.title,
-                textAlign: TextAlign.start,
+      ),
+      child: GestureDetector(
+          onTap: () {
+            if(item.url!=null) {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return new WebRoute(item.title, item.url);
+              }));
+            }
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                width: 2000,
+                padding: EdgeInsets.fromLTRB(0, 5, 0, 10),
+                child: Text(
+                  item.title,
+                  textAlign: TextAlign.start,
+                ),
               ),
-            ),
-
-            Image.network(item.imgsrc),
-            Text(
-              item.digest,
-              style: TextStyle(color: Colors.black54, ),
-            )
-          ],
-        ));
+              Image.network(item.imgsrc),
+              Text(
+                item.digest,
+                style: TextStyle(
+                  color: Colors.black54,
+                ),
+              )
+            ],
+          )),
+    );
   }
 }

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/HomePage.dart';
+import 'package:flutter_app/route/newsRoute.dart';
 import 'package:flutter_app/MyWidgetRoute.dart';
 import 'package:flutter_app/mypage.dart';
 import 'package:flutter_app/newdart.dart';
@@ -12,6 +12,7 @@ import 'package:flutter_app/route/CusterScrollViewRoute.dart';
 import 'package:flutter_app/route/MyGridViewRoute.dart';
 import 'package:flutter_app/route/MyListViewRoute.dart';
 import 'package:flutter_app/route/NetListViewRoute.dart';
+import 'package:flutter_app/route/WeatherRoute.dart';
 import 'package:flutter_app/utils/StringUtil.dart';
 import 'MyDrawer.dart';
 import 'model/test.dart';
@@ -190,8 +191,8 @@ class _MyHomePageState extends State<MyHomePage>
           body: TabBarView(
             controller: _tabController,
             children: <Widget>[
-              HomePage(),
-              NewRoute(),
+              NewsRoute(),
+              WeatherRoute(),
               //  NewDart(text: '历史'),
             //  MyPage(),
               NetListViewRoute(),
@@ -216,116 +217,7 @@ class _MyHomePageState extends State<MyHomePage>
   }
 }
 
-class NewRoute extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return new _NewRoute();
-  }
-}
 
-class _NewRoute extends State<NewRoute> {
-  @override
-  void initState() {
-    super.initState();
-    getWeather();
-  }
-
-  List<WeatherDataForecast> list = List();
-
-  void totheNextPage(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return new CusterScrollViewRoute();
-    }));
-  }
-
-  getWeather() async {
-    //
-    var client = new HttpClient();
-    //101040100 重庆
-    var url =
-        "http://t.weather.sojson.com/api/weather/city/101040100"; //101040700
-    var request = await client.getUrl(Uri.parse(url));
-    var response = await request.close();
-    var responseBody = await response.transform(Utf8Decoder()).join();
-    print("xxxxx" + responseBody);
-    Map<String, dynamic> weather = json.decode(responseBody);
-    if (weather.containsKey("data")) {
-      Map<String, dynamic> data = weather["data"];
-      if (data != null && data.containsKey("forecast")) {
-//        Map<String, dynamic> forecast = data["forecast"];
-        for (var d in data['forecast']) {
-          WeatherDataForecast wd = new WeatherDataForecast();
-          wd.ymd = d['ymd'];
-          wd.week = d['week'];
-          wd.notice = d['notice'];
-          wd.high = d['high'];
-          wd.low = d['low'];
-          wd.fx = d['fx'];
-          wd.fl = d['fl'];
-          wd.type = d['type'];
-          wd.sunrise = d['sunrise'];
-          wd.sunset = d['sunset'];
-          list.add(wd);
-        }
-      }
-    }
-    setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Widget divider1 = Divider(
-      color: Colors.deepOrangeAccent,
-    );
-    Widget divider2 = Divider(
-      color: Colors.blue,
-    );
-    return Scaffold(
-//      appBar: AppBar(
-//        title: Text('天气预报'),
-//      ),
-      body: ListView.separated(
-          itemCount: list.length,
-          // controller: _controller,
-          separatorBuilder: (BuildContext c, int index) {
-            return index % 2 == 0 ? divider1 : divider2;
-          },
-          itemBuilder: (BuildContext context, int index) {
-            WeatherDataForecast wd = list[index];
-            return ListTile(
-                isThreeLine: true,
-                leading: Icon(Icons.beach_access),
-                title: Text(""),
-                trailing: GestureDetector(
-                  child: Text(
-                      wd.ymd +
-                      " " +
-                      wd.week +
-                      "     " +
-                      " 日出" +
-                      wd.sunrise +
-                      "  日落 " +
-                      wd.sunset+
-                      "\n" +
-
-                      wd.high +
-                      wd.low +
-                      "  " +
-                      wd.fx +
-                      wd.fl +
-                      wd.type +
-                      "\n" +
-                      wd.notice
-                    ),
-                  onTap: () {
-                    //  get();
-                  },
-                ),
-                subtitle: Text(""));
-          }),
-    );
-  }
-}
 
 class ArguRoute extends StatelessWidget {
   var args;

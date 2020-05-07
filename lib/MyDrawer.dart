@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/ClibRoute.dart';
 import 'package:flutter_app/SingleChildScrollViewRoute.dart';
+import 'package:flutter_app/route/WeatherRoute.dart';
 
 import 'main.dart';
 
@@ -36,7 +37,7 @@ class MyDrawer extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) {
-                            return NewRoute();
+                            return WeatherRoute();
                           },
                           maintainState: true));
                 },
