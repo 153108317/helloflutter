@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/model/weather_entity.dart';
+import 'package:flutter_app/utils/TtsHelper.dart';
 import 'dart:convert';
 import 'dart:io';
 
 import 'CusterScrollViewRoute.dart';
+
 class WeatherRoute extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -41,9 +43,17 @@ class _NewRoute extends State<WeatherRoute> {
       Map<String, dynamic> data = weather["data"];
       if (data != null && data.containsKey("forecast")) {
 //        Map<String, dynamic> forecast = data["forecast"];
+        WeatherCityInfo info;
+        if (weather.containsKey("cityInfo")) {
+          info = new WeatherCityInfo().fromJson(weather["cityInfo"]);
+        }
         for (var d in data['forecast']) {
           WeatherDataForecast wd = new WeatherDataForecast();
-          wd.ymd = d['ymd'];
+          if (info != null) {
+            wd.ymd =info.city+ d['ymd'];
+          } else {
+            wd.ymd = d['ymd'];
+          }
           wd.week = d['week'];
           wd.notice = d['notice'];
           wd.high = d['high'];
@@ -80,33 +90,32 @@ class _NewRoute extends State<WeatherRoute> {
           },
           itemBuilder: (BuildContext context, int index) {
             WeatherDataForecast wd = list[index];
+            String data = wd.ymd +
+                " " +
+                wd.week +
+                "     " +
+                " 日出" +
+                wd.sunrise +
+                "  日落 " +
+                wd.sunset +
+                "\n" +
+                wd.high +
+                wd.low +
+                "  " +
+                wd.fx +
+                wd.fl +
+                wd.type +
+                "\n" +
+                wd.notice;
             return ListTile(
                 isThreeLine: true,
                 leading: Icon(Icons.beach_access),
                 title: Text(""),
                 trailing: GestureDetector(
-                  child: Text(
-                      wd.ymd +
-                          " " +
-                          wd.week +
-                          "     " +
-                          " 日出" +
-                          wd.sunrise +
-                          "  日落 " +
-                          wd.sunset+
-                          "\n" +
-
-                          wd.high +
-                          wd.low +
-                          "  " +
-                          wd.fx +
-                          wd.fl +
-                          wd.type +
-                          "\n" +
-                          wd.notice
-                  ),
+                  child: Text(data),
                   onTap: () {
                     //  get();
+                    TtsHelper().speak(data);
                   },
                 ),
                 subtitle: Text(""));
