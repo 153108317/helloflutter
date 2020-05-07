@@ -76,9 +76,9 @@ class _MyLIstviewRoute extends State<NetListViewRoute> {
       color: Colors.blue,
     );
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("歌曲列表"),
-      ),
+//      appBar: AppBar(
+//        title: const Text("歌曲列表"),
+//      ),
       body: ListView.separated(
           itemCount: list.length,
           controller: _controller,

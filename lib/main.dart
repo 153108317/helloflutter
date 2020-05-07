@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        "/": (context) => MyHomePage(title: 'this is homePage haha'),
+        "/": (context) => MyHomePage(title: 'hi nice to meet you'),
         'new_route': (context) => CusterScrollViewRoute(),
         'argu_route': (context) => ArguRoute(),
         'widget_route': (context) => MyWidget(),
@@ -79,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage>
   var rresult;
   int _selectedIndex = 0;
   TabController _tabController;
-  List tabs = ['新闻', '列表', '图片'];
+  List tabs = ['新闻', '天气', '歌单'];
 
   @override
   void initState() {
@@ -193,7 +193,8 @@ class _MyHomePageState extends State<MyHomePage>
               HomePage(),
               NewRoute(),
               //  NewDart(text: '历史'),
-              MyPage(),
+            //  MyPage(),
+              NetListViewRoute(),
             ],
           ),
           floatingActionButton: FloatingActionButton(
@@ -280,9 +281,9 @@ class _NewRoute extends State<NewRoute> {
       color: Colors.blue,
     );
     return Scaffold(
-      appBar: AppBar(
-        title: Text('天气预报'),
-      ),
+//      appBar: AppBar(
+//        title: Text('天气预报'),
+//      ),
       body: ListView.separated(
           itemCount: list.length,
           // controller: _controller,

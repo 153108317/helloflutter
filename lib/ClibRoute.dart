@@ -8,6 +8,7 @@ class ClibRoute extends StatelessWidget{
     return Center(
       child: Column(
         children: <Widget>[
+          Text(""),
           avatar,
           ClipOval(child: avatar),
           ClipRRect(borderRadius: BorderRadius.circular(5),

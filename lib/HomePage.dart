@@ -1,105 +1,107 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'main.dart';
+import 'model/news_entity.dart';
 import 'newdart.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return new _HomePage();
+  }
+}
+
+class _HomePage extends State<HomePage> {
+  NewsEntity newsEntity;
+
+  //http://c.m.163.com/nc/article/headline/T1348649580692/0-40.html
+  getData() async {
+    var client = new HttpClient();
+    var url =
+        "https://c.m.163.com/nc/article/headline/T1348649580692/0-40.html";
+    var request = await client.getUrl(Uri.parse(url));
+    var respone = await request.close();
+    var responeBody = await respone.transform(Utf8Decoder()).join();
+    Map<String, dynamic> map = json.decode(responeBody.toString());
+    newsEntity = new NewsEntity().fromJson(map);
+    if (newsEntity != null) {
+      setState(() {});
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '+0',
-              style: Theme.of(context).textTheme.display1,
-            ),
-            FlatButton(
-              child: Text('open new route'),
-              textColor: Colors.blue,
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) {
-                          return NewDart(text: '列表');
-                        },
-                        maintainState: true));
-              },
-            ),
-            RaisedButton(
-              textColor: Colors.deepOrange,
-              child: Text(' 单列表'),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) {
-                          return NewRoute();
-                        },
-                        maintainState: true));
-              },
-            ),
-            RaisedButton(
-              textColor: Colors.deepOrange,
-              child: Text('多列表'),
-              onPressed: () {
-                Navigator.pushNamed(context, 'new_route');
-              },
-            ),
-            RaisedButton(
-              textColor: Colors.amber,
-              child: Text('open arguRoute '),
-              onPressed: () {
-                Navigator.pushNamed(context, 'argu_route',
-                    arguments: 'argumentsyes');
-              },
-            ),
-            DecoratedBox(
-              decoration: new BoxDecoration(
-                  image: new DecorationImage(
-                      image: AssetImage('assets/bamboo.png'))),
-            ),
-            RaisedButton(
-              textColor: Colors.amber,
-              child: Text('各种控件 '),
-              onPressed: () {
-                Navigator.pushNamed(context, 'widget_route',
-                    arguments: 'argumentsyes');
-              },
-            ),
-            RaisedButton(
-              textColor: Colors.amber,
-              child: Text('歌曲列表 '),
-              onPressed: () {
-                Navigator.pushNamed(context, 'widget_netroute',
-                    arguments: 'argumentsyes');
-              },
-            ),
-          ],
-        ),
+        child: ListView.builder(
+            itemBuilder: (BuildContext context, int index) {
+              if (newsEntity != null) {
+                return ItemView(newsEntity.t1348649580692[index]);
+              } else {
+                return ItemView(null);
+              }
+            }),
       ),
     );
+  }
+}
+
+class ItemView extends StatelessWidget {
+  NewsT1348649580692 item;
+
+  ItemView(this.item);
+
+  @override
+  Widget build(BuildContext context) {
+    if (item == null) {
+      return Text("");
+    }
+    return Container(
+//        height: 300,
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: Colors.white,
+//          boxShadow: [
+//            BoxShadow(
+//                color: Color(0x99FFFF66),
+//                offset: Offset(10.0, 10.0),
+//                blurRadius: 18.0,
+//                spreadRadius: 20.0),
+//            BoxShadow(color: Color(0xfff00f77), offset: Offset(10.0, 10.0)),
+//            BoxShadow(color: Color(0xFFf44fFF), offset: Offset(10.0, 10.0))
+//          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              width: 2000,
+              padding: EdgeInsets.fromLTRB(0, 5, 0, 10),
+           child:   Text(
+                item.title,
+                textAlign: TextAlign.start,
+              ),
+            ),
+
+            Image.network(item.imgsrc),
+            Text(
+              item.digest,
+              style: TextStyle(color: Colors.black54, ),
+            )
+          ],
+        ));
   }
 }
